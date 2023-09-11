@@ -28,7 +28,9 @@ runs:
     - uses: actions/setup-node@v3
       with:
         node-version: 16
-    - run: 'dist/index.js'
+    - name: check
+      shell: bash
+      run: 'node dist/index.js'
       env:
         ACTION_REF: ${{ github.action_ref || env.BRANCH }}
         GIT_COMMIT_HASH: ${{ github.event.pull_request.head.sha }}
