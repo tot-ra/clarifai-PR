@@ -28,7 +28,6 @@ runs:
     - uses: actions/setup-node@v3
       with:
         node-version: 16
-      shell: bash
     - run: 'dist/index.js'
       env:
         ACTION_REF: ${{ github.action_ref || env.BRANCH }}
@@ -42,5 +41,5 @@ runs:
         CLARIFAI_PAT: ${{ inputs.CLARIFAI_PAT }}
         CLARIFAI_USER_ID: ${{ inputs.CLARIFAI_USER_ID }}
         CLARIFAI_APP_ID: ${{ inputs.CLARIFAI_APP_ID }}
-        CLARIFAI_MODEL_ID: ${{ inputs.CLARIFAI_MODEL_ID | 'llama2-70b-chat' }}
-        MODEL_VERSION_ID: ${{ inputs.MODEL_VERSION_ID | '6c27e86364ba461d98de95cddc559cb3' }}
+        CLARIFAI_MODEL_ID: ${{ inputs.CLARIFAI_MODEL_ID }}
+        CLARIFAI_MODEL_VERSION_ID: ${{ inputs.CLARIFAI_MODEL_VERSION_ID }}
