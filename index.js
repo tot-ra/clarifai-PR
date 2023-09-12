@@ -4,6 +4,12 @@ const github = require('@actions/github');
 async function reviewPR() {
     try {
         const octokit = github.getOctokit(process.env.GITHUB_TOKEN)
+
+        console.log("Using this data for PR check", {
+            PR_NUMBER: process.env.PR_NUMBER,
+            PR_REPO: process.env.PR_REPO
+        })
+
         const {data: pullRequest} = await octokit.rest.pulls.get({
             owner: process.env.PR_OWNER,
             repo: process.env.PR_REPO,
@@ -13,7 +19,7 @@ async function reviewPR() {
             }
         });
 
-        console.log({pullRequest});
+        console.log("Received this PR data:", pullRequest);
 
         // `who-to-greet` input defined in action metadata file
         // const nameToGreet = core.getInput('who-to-greet');
