@@ -6,7 +6,7 @@ import { graphql } from "@octokit/graphql";
 async function reviewPR() {
     try {
         console.log("process.env.GITHUB_TOKEN length", process.env.GITHUB_TOKEN.length)
-        const octokit = github.getOctokit(process.env.GITHUB_TOKEN)
+        // const octokit = github.getOctokit(process.env.GITHUB_TOKEN)
 
         const ctx = {
             owner: process.env.PR_OWNER,
@@ -21,7 +21,7 @@ async function reviewPR() {
         }
 
 
-        const { lastIssues } = await graphql({
+        const data = await graphql({
             query: `query lastIssues($owner: String!, $repo: String!, $num: Int = 3) {
     repository(owner:$owner, name:$repo) {
       issues(last:$num) {
@@ -33,8 +33,9 @@ async function reviewPR() {
       }
     }
   }`,
-            owner: "octokit",
-            repo: "graphql.js",
+            owner: ctx.owner,
+            repo: ctx.repo,
+            pull_request: ctx.pull_number,
             headers: {
                 authorization: `token ${process.env.GITHUB_TOKEN}`,
             },
@@ -48,7 +49,7 @@ async function reviewPR() {
         //     }
         // });
 
-        console.log("Received this PR data:", lastIssues);
+        console.log("Received this PR data:", data);
 
     } catch (error) {
         console.error("Failed at getting PR data")
@@ -59,7 +60,7 @@ async function reviewPR() {
 
     return
 
-    try{
+    try {
         // `who-to-greet` input defined in action metadata file
         // const nameToGreet = core.getInput('who-to-greet');
         // console.log(`Hello ${nameToGreet}!`);
