@@ -81,7 +81,6 @@ async function reviewPR() {
         const APP_ID = process.env.CLARIFAI_APP_ID;
         const MODEL_ID = process.env.CLARIFAI_MODEL_ID;
 
-
         const pr_title = data.repository.pullRequest.title
         const pr_descr = data.repository.pullRequest.body
         let RAW_TEXT = `Act as an expert software engineer reviewing a pull request. Pull Request has a title "${pr_title} and description "${pr_descr}".`;
@@ -134,6 +133,7 @@ async function reviewPR() {
         })
 
     } catch (error) {
+        console.error(error)
         core.setFailed(error.message);
     }
 }
