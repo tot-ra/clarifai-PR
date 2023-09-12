@@ -77,7 +77,8 @@ async function reviewPR() {
         const commit_msg = data.repository.pullRequest.commits.edges[0].node.commit.message
         RAW_TEXT += `Commit message is "${commit_msg}".`
 
-        for(msg of data.repository.pullRequest.commits.edges[0].node.commit.tree.entries){
+        for(let msg of data.repository.pullRequest.commits.edges[0].node.commit.tree.entries){
+            console.log(msg)
             if (msg.object?.text.length > 0) {
                 RAW_TEXT += `File "${msg.path}" contents: ${msg.object.text}`
             }
