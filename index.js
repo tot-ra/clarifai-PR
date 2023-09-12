@@ -1,5 +1,6 @@
-const core = require('@actions/core');
-const github = require('@actions/github');
+import core from '@actions/core';
+import github from '@actions/github';
+import fetch from 'node-fetch';
 
 async function reviewPR() {
     try {
@@ -29,6 +30,7 @@ async function reviewPR() {
     } catch (error) {
         console.error("Failed at getting PR data")
         core.setFailed(error.message);
+        return
     }
 
     try{
