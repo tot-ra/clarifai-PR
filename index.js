@@ -3,8 +3,6 @@ import fetch from 'node-fetch';
 import {graphql} from "@octokit/graphql";
 
 async function reviewPR() {
-    let data;
-
     try {
         console.log("process.env.GITHUB_TOKEN length", process.env.GITHUB_TOKEN.length)
         // const octokit = github.getOctokit(process.env.GITHUB_TOKEN)
@@ -22,7 +20,7 @@ async function reviewPR() {
         }
 
 
-        data = await graphql({
+        let data = await graphql({
             query: `query ($owner: String!, $repo: String!, $pr: Int!) {
   repository(owner: $owner, name: $repo) {
     pullRequest(number: $pr) {
@@ -111,14 +109,14 @@ async function reviewPR() {
         };
 
         const response = await fetch("https://api.clarifai.com/v2/models/" + MODEL_ID + "/outputs", requestOptions)
-        const data = await response.json()
+        let clarifaiData = await response.json()
 
-        if (data?.status?.code != 10000) {
-            console.error("Unexpected response code", data.status);
+        if (clarifaiData?.status?.code != 10000) {
+            console.error("Unexpected response code", clarifaiData.status);
             return
         }
 
-        const clarifaiResponse = data['outputs'][0]['data']['text']['raw']
+        const clarifaiResponse = clarifaiData['outputs'][0]['data']['text']['raw']
         console.log({
             clarifaiResponse
         })
