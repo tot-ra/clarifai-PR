@@ -11036,6 +11036,8 @@ async function reviewPR() {
             }
         }
 
+        console.log("Sending:" + RAW_TEXT)
+
         const raw = JSON.stringify({
             "user_app_id": {
                 "user_id": USER_ID,
