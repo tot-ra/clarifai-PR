@@ -1,23 +1,24 @@
-# Hello world javascript action
+# clarifai-PR
 
-This action prints "Hello World" or "Hello" + the name of a person to greet to the log.
-
-## Inputs
-
-### `who-to-greet`
-
-**Required** The name of the person to greet. Default `"World"`.
-
-## Outputs
-
-### `time`
-
-The time we greeted you.
+Adds automated AI pull request review using llama-2 model via clarifai.com platform. 
+Easily installable in your github repo as an external workflow action
 
 ## Example usage
 
 ```yaml
-uses: actions/hello-world-javascript-action@e76147da8e5c81eaf017dede5645551d4b94427b
-with:
-  who-to-greet: 'Mona the Octocat'
+on: [pull_request]
+
+jobs:
+  hello_world_job:
+    runs-on: ubuntu-latest
+    name: clarifai-pr
+    steps:
+      - name: Review pull request code with clarifai.com
+        uses: tot-ra/clarifai-PR@main
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CLARIFAI_PAT: ${{ secrets.CLARIFAI_PAT }}
+          CLARIFAI_USER_ID: ${{ secrets.CLARIFAI_USER_ID }}
+          CLARIFAI_APP_ID: ${{ secrets.CLARIFAI_APP_ID }}
+          CLARIFAI_MODEL_ID: 'llama2-70b-chat'
 ```
