@@ -10985,7 +10985,7 @@ async function reviewPR() {
       title
       body
       baseRefOid
-      commits(last: 10) {
+      commits(last: 1) {
         edges {
           node {
             commit {
@@ -11016,14 +11016,6 @@ async function reviewPR() {
             },
         });
 
-
-        // const {data: pullRequest} = await octokit.rest.pulls.get({
-        //     ...ctx,
-        //     mediaType: {
-        //         format: 'diff'
-        //     }
-        // });
-
         console.log("Received this PR data:", data);
 
     } catch (error) {
@@ -11039,7 +11031,20 @@ async function reviewPR() {
         const USER_ID = process.env.CLARIFAI_USER_ID;
         const APP_ID = process.env.CLARIFAI_APP_ID;
         const MODEL_ID = process.env.CLARIFAI_MODEL_ID;
-        const RAW_TEXT = 'What is the capital of Estonia?';
+
+
+        const pr_title = data.data.repository.pullRequest.title
+        const pr_descr = data.data.repository.pullRequest.body
+        let RAW_TEXT = `Act as an expert software engineer reviewing a pull request. Pull Request has a title "${pr_title} and description "${pr_descr}".`;
+
+        const commit_msg = data.data.repository.pullRequest.commits.edges[0].node.commit.message
+        RAW_TEXT += `Commit message is "${commit_msg}".`
+
+        for(msg of data.data.repository.pullRequest.commits.edges[0].node.commit.tree.entries){
+            if (msg.object?.text.length > 0) {
+                RAW_TEXT += `File "${msg.path}" contents: ${msg.object.text}`
+            }
+        }
 
         const raw = JSON.stringify({
             "user_app_id": {
@@ -11051,8 +11056,6 @@ async function reviewPR() {
                     "data": {
                         "text": {
                             "raw": RAW_TEXT
-                            // url: TEXT_URL, allow_duplicate_url: true
-                            // raw: fileBytes
                         }
                     }
                 }
