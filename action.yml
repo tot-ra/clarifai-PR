@@ -4,6 +4,8 @@ branding:
   icon: 'circle'
   color: 'blue'
 inputs:
+  GITHUB_TOKEN:
+    required: true
   CLARIFAI_PAT:
     required: true
   CLARIFAI_USER_ID:
