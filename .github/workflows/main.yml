@@ -6,7 +6,6 @@ jobs:
     name: clarifai-pr
     steps:
       - name: Review pull request code with clarifai.com
-        id: hello
         uses: tot-ra/clarifai-PR@main
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
