@@ -9816,6 +9816,7 @@ async function reviewPR() {
         const octokit = github.getOctokit(process.env.GITHUB_TOKEN)
 
         console.log("Using this data for PR check", {
+            PR_OWNER: process.env.PR_OWNER,
             PR_NUMBER: process.env.PR_NUMBER,
             PR_REPO: process.env.PR_REPO
         })
@@ -9829,6 +9830,12 @@ async function reviewPR() {
             }
         });
 
+    } catch (error) {
+        console.error("Failed at getting PR data")
+        core.setFailed(error.message);
+    }
+
+    try{
         console.log("Received this PR data:", pullRequest);
 
         // `who-to-greet` input defined in action metadata file

@@ -31,8 +31,8 @@ runs:
         GIT_COMMIT_HASH: ${{ github.event.pull_request.head.sha }}
         GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }}
         LINK: "https://github.com/${{ github.repository }}/pull/${{ github.event.pull_request.number }}"
-        PR_TITLE: ${{ github.event.pull_request.title }}
         BRANCH:  ${{ env.BRANCH }}
+        PR_TITLE: ${{ github.event.pull_request.title }}
         PR_NUMBER: ${{ github.event.pull_request.number }}
         PR_REPO: ${{ github.repository }}
         PR_OWNER: ${{ github.repository_owner }}
