@@ -4,6 +4,7 @@ import fetch from 'node-fetch';
 
 async function reviewPR() {
     try {
+        console.log("process.env.GITHUB_TOKEN length", process.env.GITHUB_TOKEN.length)
         const octokit = github.getOctokit(process.env.GITHUB_TOKEN)
 
         const ctx = {
