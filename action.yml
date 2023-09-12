@@ -1,5 +1,5 @@
-name: 'Hello World'
-description: 'Greet someone and record the time'
+name: 'clarifai-PR'
+description: 'PR review with clarifai'
 branding:
   icon: 'circle'
   color: 'blue'
@@ -13,9 +13,6 @@ inputs:
   CLARIFAI_MODEL_ID:
     required: true
 
-outputs:
-  time: # id of output
-    description: 'The time we greeted you'
 runs:
   using: 'composite'
   steps:
