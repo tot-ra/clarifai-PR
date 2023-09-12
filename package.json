@@ -9,6 +9,7 @@
   "main": "index.js",
   "devDependencies": {},
   "scripts": {
+    "build": "ncc build index.js --license licenses.txt",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

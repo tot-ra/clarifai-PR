@@ -76,4 +76,4 @@ async function reviewPR() {
     }
 }
 
-await reviewPR()
+reviewPR()
