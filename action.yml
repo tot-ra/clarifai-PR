@@ -4,6 +4,8 @@ branding:
   icon: 'circle'
   color: 'blue'
 inputs:
+  GITHUB_TOKEN:
+    required: true
   CLARIFAI_PAT:
     required: true
   CLARIFAI_USER_ID:
@@ -22,7 +24,7 @@ runs:
         fetch-depth: 2
     - uses: actions/setup-node@v3
       with:
-        node-version: 16
+        node-version: 18
     - name: check
       shell: bash
       run: 'node dist/index.js'
@@ -31,9 +33,9 @@ runs:
         GIT_COMMIT_HASH: ${{ github.event.pull_request.head.sha }}
         GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }}
         LINK: "https://github.com/${{ github.repository }}/pull/${{ github.event.pull_request.number }}"
-        PR_TITLE: ${{ github.event.pull_request.title }}
         BRANCH:  ${{ env.BRANCH }}
-        PR_NUMBER: ${{ github.event.pull_request.number }}
+        PR_TITLE: ${{ github.event.pull_request.title }}
+        PR_NUMBER: ${{ github.event.number }}
         PR_REPO: ${{ github.repository }}
         PR_OWNER: ${{ github.repository_owner }}
         CLARIFAI_PAT: ${{ inputs.CLARIFAI_PAT }}

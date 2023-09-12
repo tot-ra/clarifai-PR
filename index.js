@@ -1,20 +1,65 @@
-const core = require('@actions/core');
-const github = require('@actions/github');
+import * as core from '@actions/core'
+import * as github from '@actions/github';
+import fetch from 'node-fetch';
+import { graphql } from "@octokit/graphql";
 
 async function reviewPR() {
     try {
+        console.log("process.env.GITHUB_TOKEN length", process.env.GITHUB_TOKEN.length)
         const octokit = github.getOctokit(process.env.GITHUB_TOKEN)
-        const {data: pullRequest} = await octokit.rest.pulls.get({
+
+        const ctx = {
             owner: process.env.PR_OWNER,
             repo: process.env.PR_REPO,
             pull_number: process.env.PR_NUMBER,
-            mediaType: {
-                format: 'diff'
-            }
+        }
+        console.log("Using this data for PR check", ctx)
+
+        if(!process.env.PR_NUMBER){
+            core.setFailed("No PR number detected. Wrong event type?");
+            return
+        }
+
+
+        const { lastIssues } = await graphql({
+            query: `query lastIssues($owner: String!, $repo: String!, $num: Int = 3) {
+    repository(owner:$owner, name:$repo) {
+      issues(last:$num) {
+        edges {
+          node {
+            title
+          }
+        }
+      }
+    }
+  }`,
+            owner: "octokit",
+            repo: "graphql.js",
+            headers: {
+                authorization: `token ${process.env.GITHUB_TOKEN}`,
+            },
         });
 
-        console.log({pullRequest});
 
+        // const {data: pullRequest} = await octokit.rest.pulls.get({
+        //     ...ctx,
+        //     mediaType: {
+        //         format: 'diff'
+        //     }
+        // });
+
+        console.log("Received this PR data:", lastIssues);
+
+    } catch (error) {
+        console.error("Failed at getting PR data")
+        console.error(error.message)
+        core.setFailed(error.message);
+        return
+    }
+
+    return
+
+    try{
         // `who-to-greet` input defined in action metadata file
         // const nameToGreet = core.getInput('who-to-greet');
         // console.log(`Hello ${nameToGreet}!`);
