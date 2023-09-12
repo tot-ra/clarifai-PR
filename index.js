@@ -1,7 +1,6 @@
 import * as core from '@actions/core'
-import * as github from '@actions/github';
 import fetch from 'node-fetch';
-import { graphql } from "@octokit/graphql";
+import {graphql} from "@octokit/graphql";
 
 async function reviewPR() {
     try {
@@ -15,7 +14,7 @@ async function reviewPR() {
         }
         console.log("Using this data for PR check", ctx)
 
-        if(!process.env.PR_NUMBER){
+        if (!process.env.PR_NUMBER) {
             core.setFailed("No PR number detected. Wrong event type?");
             return
         }
@@ -34,7 +33,7 @@ async function reviewPR() {
     }
   }`,
             owner: ctx.owner,
-            repo: ctx.repo,
+            repo: ctx.repo.replace(ctx.owner + '/', ''),
             pull_request: ctx.pull_number,
             headers: {
                 authorization: `token ${process.env.GITHUB_TOKEN}`,
