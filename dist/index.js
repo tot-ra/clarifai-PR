@@ -16941,6 +16941,7 @@ async function reviewPR() {
 
     } catch (error) {
         console.error("Failed at getting PR data")
+        console.error(error.message)
         core_default().setFailed(error.message);
         return
     }
