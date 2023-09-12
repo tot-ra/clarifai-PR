@@ -14,7 +14,6 @@ jobs:
           CLARIFAI_USER_ID: ${{ secrets.CLARIFAI_USER_ID }}
           CLARIFAI_APP_ID: ${{ secrets.CLARIFAI_APP_ID }}
           CLARIFAI_MODEL_ID: 'llama2-70b-chat'
-          CLARIFAI_MODEL_VERSION_ID: '6c27e86364ba461d98de95cddc559cb3'
       # Use the output from the `hello` step
       - name: Get the output time
         run: echo "The time was ${{ steps.hello.outputs.time }}"

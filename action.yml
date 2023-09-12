@@ -44,4 +44,3 @@ runs:
         CLARIFAI_USER_ID: ${{ inputs.CLARIFAI_USER_ID }}
         CLARIFAI_APP_ID: ${{ inputs.CLARIFAI_APP_ID }}
         CLARIFAI_MODEL_ID: ${{ inputs.CLARIFAI_MODEL_ID }}
-        CLARIFAI_MODEL_VERSION_ID: ${{ inputs.CLARIFAI_MODEL_VERSION_ID }}
