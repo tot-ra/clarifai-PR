@@ -1,6 +1,7 @@
 import * as core from '@actions/core'
 import * as github from '@actions/github';
 import fetch from 'node-fetch';
+import { graphql } from "@octokit/graphql";
 
 async function reviewPR() {
     try {
@@ -19,14 +20,35 @@ async function reviewPR() {
             return
         }
 
-        const {data: pullRequest} = await octokit.rest.pulls.get({
-            ...ctx,
-            mediaType: {
-                format: 'diff'
-            }
+
+        const { lastIssues } = await graphql({
+            query: `query lastIssues($owner: String!, $repo: String!, $num: Int = 3) {
+    repository(owner:$owner, name:$repo) {
+      issues(last:$num) {
+        edges {
+          node {
+            title
+          }
+        }
+      }
+    }
+  }`,
+            owner: "octokit",
+            repo: "graphql.js",
+            headers: {
+                authorization: `token ${process.env.GITHUB_TOKEN}`,
+            },
         });
 
-        console.log("Received this PR data:", pullRequest);
+
+        // const {data: pullRequest} = await octokit.rest.pulls.get({
+        //     ...ctx,
+        //     mediaType: {
+        //         format: 'diff'
+        //     }
+        // });
+
+        console.log("Received this PR data:", lastIssues);
 
     } catch (error) {
         console.error("Failed at getting PR data")
@@ -34,6 +56,8 @@ async function reviewPR() {
         core.setFailed(error.message);
         return
     }
+
+    return
 
     try{
         // `who-to-greet` input defined in action metadata file
