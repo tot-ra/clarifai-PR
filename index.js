@@ -79,7 +79,7 @@ async function reviewPR() {
 
         for(let msg of data.repository.pullRequest.commits.edges[0].node.commit.tree.entries){
             if (msg.object?.text) {
-                RAW_TEXT += `\nFile "${msg.path}" contents: \n\n ${msg.object.text.substring(0, 60000)}`
+                RAW_TEXT += `\nFile "${msg.path}" contents: \n\n ${msg.object.text.substring(0, 1000)}`
             }
         }
 
