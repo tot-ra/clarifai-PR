@@ -14642,18 +14642,6 @@ module.exports = JSON.parse('[[[0,44],"disallowed_STD3_valid"],[[45,46],"valid"]
 /******/ 	__nccwpck_require__.m = __webpack_modules__;
 /******/ 	
 /************************************************************************/
-/******/ 	/* webpack/runtime/compat get default export */
-/******/ 	(() => {
-/******/ 		// getDefaultExport function for compatibility with non-harmony modules
-/******/ 		__nccwpck_require__.n = (module) => {
-/******/ 			var getter = module && module.__esModule ?
-/******/ 				() => (module['default']) :
-/******/ 				() => (module);
-/******/ 			__nccwpck_require__.d(getter, { a: getter });
-/******/ 			return getter;
-/******/ 		};
-/******/ 	})();
-/******/ 	
 /******/ 	/* webpack/runtime/define property getters */
 /******/ 	(() => {
 /******/ 		// define getter functions for harmony exports
@@ -14760,10 +14748,8 @@ __nccwpck_require__.r(__webpack_exports__);
 
 // EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
 var core = __nccwpck_require__(7820);
-var core_default = /*#__PURE__*/__nccwpck_require__.n(core);
 // EXTERNAL MODULE: ./node_modules/@actions/github/lib/github.js
 var github = __nccwpck_require__(3737);
-var github_default = /*#__PURE__*/__nccwpck_require__.n(github);
 ;// CONCATENATED MODULE: external "node:http"
 const external_node_http_namespaceObject = require("node:http");
 ;// CONCATENATED MODULE: external "node:https"
@@ -16916,7 +16902,7 @@ function fixResponseChunkedTransferBadEnding(request, errorCallback) {
 
 async function reviewPR() {
     try {
-        const octokit = github_default().getOctokit(process.env.GITHUB_TOKEN)
+        const octokit = github.getOctokit(process.env.GITHUB_TOKEN)
 
         const ctx = {
             owner: process.env.PR_OWNER,
@@ -16926,7 +16912,7 @@ async function reviewPR() {
         console.log("Using this data for PR check", ctx)
 
         if(!process.env.PR_NUMBER){
-            core_default().setFailed("No PR number detected. Wrong event type?");
+            core.setFailed("No PR number detected. Wrong event type?");
             return
         }
 
@@ -16942,7 +16928,7 @@ async function reviewPR() {
     } catch (error) {
         console.error("Failed at getting PR data")
         console.error(error.message)
-        core_default().setFailed(error.message);
+        core.setFailed(error.message);
         return
     }
 
@@ -17004,7 +16990,7 @@ async function reviewPR() {
         })
 
     } catch (error) {
-        core_default().setFailed(error.message);
+        core.setFailed(error.message);
     }
 }
 
