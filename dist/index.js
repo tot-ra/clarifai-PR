@@ -10956,6 +10956,8 @@ var dist_node = __nccwpck_require__(7105);
 
 
 async function reviewPR() {
+    let data;
+
     try {
         console.log("process.env.GITHUB_TOKEN length", process.env.GITHUB_TOKEN.length)
         // const octokit = github.getOctokit(process.env.GITHUB_TOKEN)
@@ -10973,7 +10975,7 @@ async function reviewPR() {
         }
 
 
-        const data = await (0,dist_node.graphql)({
+        data = await (0,dist_node.graphql)({
             query: `query ($owner: String!, $repo: String!, $pr: Int!) {
   repository(owner: $owner, name: $repo) {
     pullRequest(number: $pr) {
@@ -11033,14 +11035,14 @@ async function reviewPR() {
         const MODEL_ID = process.env.CLARIFAI_MODEL_ID;
 
 
-        const pr_title = data.data.repository.pullRequest.title
-        const pr_descr = data.data.repository.pullRequest.body
+        const pr_title = data.repository.pullRequest.title
+        const pr_descr = data.repository.pullRequest.body
         let RAW_TEXT = `Act as an expert software engineer reviewing a pull request. Pull Request has a title "${pr_title} and description "${pr_descr}".`;
 
-        const commit_msg = data.data.repository.pullRequest.commits.edges[0].node.commit.message
+        const commit_msg = data.repository.pullRequest.commits.edges[0].node.commit.message
         RAW_TEXT += `Commit message is "${commit_msg}".`
 
-        for(msg of data.data.repository.pullRequest.commits.edges[0].node.commit.tree.entries){
+        for(msg of data.repository.pullRequest.commits.edges[0].node.commit.tree.entries){
             if (msg.object?.text.length > 0) {
                 RAW_TEXT += `File "${msg.path}" contents: ${msg.object.text}`
             }
