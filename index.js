@@ -67,15 +67,6 @@ async function reviewPR() {
 
         console.log("Received this PR data:", data);
 
-    } catch (error) {
-        console.error("Failed at getting PR data")
-        console.error(error)
-        core.setFailed(error.message);
-        return
-    }
-
-
-    try {
         const PAT = process.env.CLARIFAI_PAT;
         const USER_ID = process.env.CLARIFAI_USER_ID;
         const APP_ID = process.env.CLARIFAI_APP_ID;
@@ -133,7 +124,8 @@ async function reviewPR() {
         })
 
     } catch (error) {
-        console.error(error)
+        console.error(error.message)
+        console.error(error.stack)
         core.setFailed(error.message);
     }
 }
