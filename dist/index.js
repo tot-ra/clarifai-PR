@@ -10974,20 +10974,43 @@ async function reviewPR() {
 
 
         const data = await (0,dist_node.graphql)({
-            query: `query lastIssues($owner: String!, $repo: String!, $num: Int = 3) {
-    repository(owner:$owner, name:$repo) {
-      issues(last:$num) {
+            query: `query ($owner: String!, $repo: String!, $pr: Int!) {
+  repository(owner: $owner, name: $repo) {
+    pullRequest(number: $pr) {
+      headRefName
+      headRefOid
+      mergeable
+      reviewDecision
+      state
+      title
+      body
+      baseRefOid
+      commits(last: 10) {
         edges {
           node {
-            title
+            commit {
+              message
+              tree {
+                entries {
+                  path
+                  object {
+                    ... on Blob {
+                      id
+                      text
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
     }
-  }`,
+  }
+}`,
             owner: ctx.owner,
             repo: ctx.repo.replace(ctx.owner + '/', ''),
-            pull_request: ctx.pull_number,
+            pr: ctx.pull_number,
             headers: {
                 authorization: `token ${process.env.GITHUB_TOKEN}`,
             },
