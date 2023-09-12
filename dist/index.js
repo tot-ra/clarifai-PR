@@ -9815,20 +9815,26 @@ async function reviewPR() {
     try {
         const octokit = github.getOctokit(process.env.GITHUB_TOKEN)
 
-        console.log("Using this data for PR check", {
-            PR_OWNER: process.env.PR_OWNER,
-            PR_NUMBER: process.env.PR_NUMBER,
-            PR_REPO: process.env.PR_REPO
-        })
-
-        const {data: pullRequest} = await octokit.rest.pulls.get({
+        const ctx = {
             owner: process.env.PR_OWNER,
             repo: process.env.PR_REPO,
             pull_number: process.env.PR_NUMBER,
+        }
+        console.log("Using this data for PR check", ctx)
+
+        if(!process.env.PR_NUMBER){
+            core.setFailed("No PR number detected. Wrong event type?");
+            return
+        }
+
+        const {data: pullRequest} = await octokit.rest.pulls.get({
+            ...ctx,
             mediaType: {
                 format: 'diff'
             }
         });
+
+        console.log("Received this PR data:", pullRequest);
 
     } catch (error) {
         console.error("Failed at getting PR data")
@@ -9836,8 +9842,6 @@ async function reviewPR() {
     }
 
     try{
-        console.log("Received this PR data:", pullRequest);
-
         // `who-to-greet` input defined in action metadata file
         // const nameToGreet = core.getInput('who-to-greet');
         // console.log(`Hello ${nameToGreet}!`);

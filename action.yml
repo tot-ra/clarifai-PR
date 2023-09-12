@@ -33,7 +33,7 @@ runs:
         LINK: "https://github.com/${{ github.repository }}/pull/${{ github.event.pull_request.number }}"
         BRANCH:  ${{ env.BRANCH }}
         PR_TITLE: ${{ github.event.pull_request.title }}
-        PR_NUMBER: ${{ github.event.pull_request.number }}
+        PR_NUMBER: ${{ github.event.number }}
         PR_REPO: ${{ github.repository }}
         PR_OWNER: ${{ github.repository_owner }}
         CLARIFAI_PAT: ${{ inputs.CLARIFAI_PAT }}
