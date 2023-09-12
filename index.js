@@ -1,12 +1,11 @@
 import * as core from '@actions/core'
-import * as github from '@actions/github';
 import fetch from 'node-fetch';
-import { graphql } from "@octokit/graphql";
+import {graphql} from "@octokit/graphql";
 
 async function reviewPR() {
     try {
         console.log("process.env.GITHUB_TOKEN length", process.env.GITHUB_TOKEN.length)
-        const octokit = github.getOctokit(process.env.GITHUB_TOKEN)
+        // const octokit = github.getOctokit(process.env.GITHUB_TOKEN)
 
         const ctx = {
             owner: process.env.PR_OWNER,
@@ -15,66 +14,76 @@ async function reviewPR() {
         }
         console.log("Using this data for PR check", ctx)
 
-        if(!process.env.PR_NUMBER){
+        if (!process.env.PR_NUMBER) {
             core.setFailed("No PR number detected. Wrong event type?");
             return
         }
 
 
-        const { lastIssues } = await graphql({
-            query: `query lastIssues($owner: String!, $repo: String!, $num: Int = 3) {
-    repository(owner:$owner, name:$repo) {
-      issues(last:$num) {
+        let data = await graphql({
+            query: `query ($owner: String!, $repo: String!, $pr: Int!) {
+  repository(owner: $owner, name: $repo) {
+    pullRequest(number: $pr) {
+      headRefName
+      headRefOid
+      mergeable
+      reviewDecision
+      state
+      title
+      body
+      baseRefOid
+      commits(last: 1) {
         edges {
           node {
-            title
+            commit {
+              message
+              tree {
+                entries {
+                  path
+                  object {
+                    ... on Blob {
+                      id
+                      text
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
     }
-  }`,
-            owner: "octokit",
-            repo: "graphql.js",
+  }
+}`,
+            owner: ctx.owner,
+            repo: ctx.repo.replace(ctx.owner + '/', ''),
+            pr: parseInt(ctx.pull_number,10),
             headers: {
                 authorization: `token ${process.env.GITHUB_TOKEN}`,
             },
         });
 
-
-        // const {data: pullRequest} = await octokit.rest.pulls.get({
-        //     ...ctx,
-        //     mediaType: {
-        //         format: 'diff'
-        //     }
-        // });
-
-        console.log("Received this PR data:", lastIssues);
-
-    } catch (error) {
-        console.error("Failed at getting PR data")
-        console.error(error.message)
-        core.setFailed(error.message);
-        return
-    }
-
-    return
-
-    try{
-        // `who-to-greet` input defined in action metadata file
-        // const nameToGreet = core.getInput('who-to-greet');
-        // console.log(`Hello ${nameToGreet}!`);
-        // const time = (new Date()).toTimeString();
-        // core.setOutput("time", time);
-        // // Get the JSON webhook payload for the event that triggered the workflow
-        // const payload = JSON.stringify(github.context.payload, undefined, 2)
-        // console.log(`The event payload: ${payload}`);
-
+        console.log("Received this PR data:", data);
 
         const PAT = process.env.CLARIFAI_PAT;
         const USER_ID = process.env.CLARIFAI_USER_ID;
         const APP_ID = process.env.CLARIFAI_APP_ID;
         const MODEL_ID = process.env.CLARIFAI_MODEL_ID;
-        const RAW_TEXT = 'What is the capital of Estonia?';
+
+        const pr_title = data.repository.pullRequest.title
+        const pr_descr = data.repository.pullRequest.body
+        let RAW_TEXT = `Act as an expert software engineer reviewing a pull request. Pull Request has a title "${pr_title} and description "${pr_descr}".`;
+
+        const commit_msg = data.repository.pullRequest.commits.edges[0].node.commit.message
+        RAW_TEXT += `Commit message is "${commit_msg}".`
+
+        for(let msg of data.repository.pullRequest.commits.edges[0].node.commit.tree.entries){
+            if (msg.object?.text) {
+                RAW_TEXT += `\nFile "${msg.path}" contents: \n\n ${msg.object.text.substring(0, 1000)}`
+            }
+        }
+
+        console.log("Sending:" + RAW_TEXT)
 
         const raw = JSON.stringify({
             "user_app_id": {
@@ -86,8 +95,6 @@ async function reviewPR() {
                     "data": {
                         "text": {
                             "raw": RAW_TEXT
-                            // url: TEXT_URL, allow_duplicate_url: true
-                            // raw: fileBytes
                         }
                     }
                 }
@@ -104,19 +111,21 @@ async function reviewPR() {
         };
 
         const response = await fetch("https://api.clarifai.com/v2/models/" + MODEL_ID + "/outputs", requestOptions)
-        const data = await response.json()
+        let clarifaiData = await response.json()
 
-        if (data?.status?.code != 10000) {
-            console.error("Unexpected response code", data.status);
+        if (clarifaiData?.status?.code != 10000) {
+            console.error("Unexpected response code", clarifaiData.status);
             return
         }
 
-        const clarifaiResponse = data['outputs'][0]['data']['text']['raw']
+        const clarifaiResponse = clarifaiData['outputs'][0]['data']['text']['raw']
         console.log({
             clarifaiResponse
         })
 
     } catch (error) {
+        console.error(error.message)
+        console.error(error.stack)
         core.setFailed(error.message);
     }
 }
