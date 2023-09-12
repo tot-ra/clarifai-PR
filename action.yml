@@ -4,15 +4,13 @@ branding:
   icon: 'circle'
   color: 'blue'
 inputs:
-  who-to-greet:  # id of input
-    description: 'Who to greet'
-    required: true
-    default: 'World'
   CLARIFAI_PAT:
     required: true
   CLARIFAI_USER_ID:
     required: true
   CLARIFAI_APP_ID:
+    required: true
+  CLARIFAI_MODEL_ID:
     required: true
 
 outputs:
