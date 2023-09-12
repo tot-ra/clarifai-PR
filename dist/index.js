@@ -11064,6 +11064,7 @@ async function reviewPR() {
         };
 
         const response = await fetch("https://api.clarifai.com/v2/models/" + MODEL_ID + "/outputs", requestOptions)
+        console.log({response})
         let clarifaiData = await response.json()
 
         if (clarifaiData?.status?.code != 10000) {
