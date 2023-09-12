@@ -11010,7 +11010,7 @@ async function reviewPR() {
 }`,
             owner: ctx.owner,
             repo: ctx.repo.replace(ctx.owner + '/', ''),
-            pr: ctx.pull_number,
+            pr: parseInt(ctx.pull_number,10),
             headers: {
                 authorization: `token ${process.env.GITHUB_TOKEN}`,
             },
