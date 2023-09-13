@@ -10976,7 +10976,8 @@ async function reviewPR() {
         let RAW_TEXT = `Act as an expert software engineer reviewing code. 
         You need to find errors and suggest a fix. Prefix errors with 🔴 as importance symbol. 
         Prefix performance issues with 🟠 importance symbol.
-        If there are no clear errors, suggest improvements. Prefix improvements with 🔵 importance symbol.
+        Prefix naming and code inconsistencies with 🟡 importance symbol.
+        Prefix improvements with 🟢 importance symbol.
         Format your output as github markdown table with columns: importance, file path, line number(s) and comment.`
 
         const gitDiff = external_fs_default().readFileSync('diff-file', { encoding: 'utf8', flag: 'r' });
@@ -11048,13 +11049,13 @@ async function reviewPR() {
         const APP_ID = process.env.CLARIFAI_APP_ID;
         const MODEL_ID = process.env.CLARIFAI_MODEL_ID;
 
-        // const pr_title = data.repository.pullRequest.title
-        // const pr_descr = data.repository.pullRequest.body
-        // RAW_TEXT += `Last pull request was titled "${pr_title} and had a description "${pr_descr}".\n`;
-        //
-        // const commit_msg = data.repository.pullRequest.commits.edges[0].node.commit.message
-        // RAW_TEXT += `Last commit message was "${commit_msg}".\n`
-        //
+        const pr_title = data.repository.pullRequest.title
+        const pr_descr = data.repository.pullRequest.body
+        RAW_TEXT += `This pull request was titled "${pr_title} and had a description "${pr_descr}".\n`;
+
+        const commit_msg = data.repository.pullRequest.commits.edges[0].node.commit.message
+        RAW_TEXT += `Last commit message was "${commit_msg}".\n`
+
         // for (let msg of data.repository.pullRequest.commits.edges[0].node.commit.tree.entries) {
         //     if (msg.object?.text) {
         //         RAW_TEXT += `\nFile "${msg.path}" contents: \n\n ${msg.object.text.substring(0, 10000)}`
@@ -11099,9 +11100,11 @@ async function reviewPR() {
         console.log("clarifai response:", clarifaiData)
         const clarifaiResponse = clarifaiData['outputs'][0]['data']['text']['raw']
 
+        const clientName = 'clarifai-pr-bot'
+
         await (0,dist_node.graphql)(`
-  mutation AddComment($pr: ID!, $body: String!) {
-    addComment(input: { subjectId: $pr, body: $body }) {
+  mutation AddComment($pr: ID!, $body: String!, $client: String) {
+    addComment(input: { subjectId: $pr, body: $body, clientMutationId: $client }) {
       clientMutationId
     }
   }
@@ -11110,6 +11113,7 @@ async function reviewPR() {
             owner: ctx.owner,
             repo: ctx.repo.replace(ctx.owner + '/', ''),
             pr: data.repository.pullRequest.id,
+            client: clientName,
             headers: {
                 authorization: `token ${process.env.GITHUB_TOKEN}`,
             },

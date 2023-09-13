@@ -18,9 +18,11 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: ls
-      shell: bash
-      run: "ls -hal"
+    - uses: izhangzhihao/delete-comment@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        delete_user_name: clarifai-pr-bot
+        issue_number: ${{ github.event.number }}
     - uses: actions/checkout@v3
       with:
         ref: ${{ github.event.pull_request.head.sha }}
