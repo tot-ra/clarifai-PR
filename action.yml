@@ -20,7 +20,7 @@ runs:
   steps:
     - uses: izhangzhihao/delete-comment@master
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+        github_token: ${{ inputs.GITHUB_TOKEN }}
         delete_user_name: clarifai-pr-bot
         issue_number: ${{ github.event.number }}
     - uses: actions/checkout@v3
