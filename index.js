@@ -1,11 +1,21 @@
 import * as core from '@actions/core'
 import fetch from 'node-fetch';
 import {graphql} from "@octokit/graphql";
+import fs from 'fs'
 
 async function reviewPR() {
     try {
         console.log("process.env.GITHUB_TOKEN length", process.env.GITHUB_TOKEN.length)
         // const octokit = github.getOctokit(process.env.GITHUB_TOKEN)
+
+        let RAW_TEXT = `Act as an expert software engineer reviewing code. 
+        You need to find errors and suggest a fix.
+        Format your output to include file_name, line_number and comment.`
+
+        const gitDiff = fs.readFileSync('diff-file', { encoding: 'utf8', flag: 'r' });
+        console.log('git diff:', gitDiff);
+
+        RAW_TEXT += `Here is a git diff for changes: ${gitDiff}`
 
         const ctx = {
             owner: process.env.PR_OWNER,
@@ -73,10 +83,7 @@ async function reviewPR() {
 
         const pr_title = data.repository.pullRequest.title
         const pr_descr = data.repository.pullRequest.body
-        let RAW_TEXT = `Act as an expert software engineer reviewing code. 
-        You need to find errors and suggest a fix.
-        Format your output to include file_name, line_number and comment.
-        Last pull request was titled "${pr_title} and had a description "${pr_descr}".`;
+        RAW_TEXT += `Last pull request was titled "${pr_title} and had a description "${pr_descr}".`;
 
         const commit_msg = data.repository.pullRequest.commits.edges[0].node.commit.message
         RAW_TEXT += `Last commit message was "${commit_msg}". `
@@ -122,7 +129,7 @@ async function reviewPR() {
             return
         }
 
-        console.log(clarifaiData)
+        console.log("clarifai response:", clarifaiData)
         const clarifaiResponse = clarifaiData['outputs'][0]['data']['text']['raw']
 
         await graphql(`

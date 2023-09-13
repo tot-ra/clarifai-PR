@@ -25,6 +25,9 @@ runs:
     - uses: actions/setup-node@v3
       with:
         node-version: 18
+    - name: diff
+      shell: bash
+      run: 'git --no-pager diff HEAD^ HEAD --output=diff-file'
     - name: check
       shell: bash
       run: 'node dist/index.js'

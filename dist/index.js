@@ -8697,6 +8697,18 @@ return new B(c,{type:"multipart/form-data; boundary="+b})}
 /******/ 	__nccwpck_require__.m = __webpack_modules__;
 /******/ 	
 /************************************************************************/
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	(() => {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__nccwpck_require__.n = (module) => {
+/******/ 			var getter = module && module.__esModule ?
+/******/ 				() => (module['default']) :
+/******/ 				() => (module);
+/******/ 			__nccwpck_require__.d(getter, { a: getter });
+/******/ 			return getter;
+/******/ 		};
+/******/ 	})();
+/******/ 	
 /******/ 	/* webpack/runtime/define property getters */
 /******/ 	(() => {
 /******/ 		// define getter functions for harmony exports
@@ -10950,7 +10962,11 @@ function fixResponseChunkedTransferBadEnding(request, errorCallback) {
 
 // EXTERNAL MODULE: ./node_modules/@octokit/graphql/dist-node/index.js
 var dist_node = __nccwpck_require__(7105);
+// EXTERNAL MODULE: external "fs"
+var external_fs_ = __nccwpck_require__(7147);
+var external_fs_default = /*#__PURE__*/__nccwpck_require__.n(external_fs_);
 ;// CONCATENATED MODULE: ./index.js
+
 
 
 
@@ -10959,6 +10975,15 @@ async function reviewPR() {
     try {
         console.log("process.env.GITHUB_TOKEN length", process.env.GITHUB_TOKEN.length)
         // const octokit = github.getOctokit(process.env.GITHUB_TOKEN)
+
+        let RAW_TEXT = `Act as an expert software engineer reviewing code. 
+        You need to find errors and suggest a fix.
+        Format your output to include file_name, line_number and comment.`
+
+        const gitDiff = external_fs_default().readFileSync('diff-file', { encoding: 'utf8', flag: 'r' });
+        console.log('git diff:', gitDiff);
+
+        RAW_TEXT += `Here is a git diff for changes: ${gitDiff}`
 
         const ctx = {
             owner: process.env.PR_OWNER,
@@ -11026,10 +11051,7 @@ async function reviewPR() {
 
         const pr_title = data.repository.pullRequest.title
         const pr_descr = data.repository.pullRequest.body
-        let RAW_TEXT = `Act as an expert software engineer reviewing code. 
-        You need to find errors and suggest a fix.
-        Format your output to include file_name, line_number and comment.
-        Last pull request was titled "${pr_title} and had a description "${pr_descr}".`;
+        RAW_TEXT += `Last pull request was titled "${pr_title} and had a description "${pr_descr}".`;
 
         const commit_msg = data.repository.pullRequest.commits.edges[0].node.commit.message
         RAW_TEXT += `Last commit message was "${commit_msg}". `
@@ -11075,7 +11097,7 @@ async function reviewPR() {
             return
         }
 
-        console.log(clarifaiData)
+        console.log("clarifai response:", clarifaiData)
         const clarifaiResponse = clarifaiData['outputs'][0]['data']['text']['raw']
 
         await (0,dist_node.graphql)(`
