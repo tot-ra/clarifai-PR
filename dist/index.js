@@ -11067,7 +11067,6 @@ async function reviewPR() {
         };
 
         const response = await fetch("https://api.clarifai.com/v2/models/" + MODEL_ID + "/outputs", requestOptions)
-        console.log({response})
         let clarifaiData = await response.json()
 
         if (clarifaiData?.status?.code != 10000) {
@@ -11075,10 +11074,11 @@ async function reviewPR() {
             return
         }
 
+        console.log(clarifaiData)
         const clarifaiResponse = clarifaiData['outputs'][0]['data']['text']['raw']
 
         await (0,dist_node.graphql)(`
-  mutation AddPullRequestComment($pr: Int!, $body: String!) {
+  mutation AddPullRequestComment($pr: ID!, $body: String!) {
     addPullRequestReviewComment(input: { pullRequestId: $pr, body: $body }) {
       comment {
         id
@@ -11089,7 +11089,7 @@ async function reviewPR() {
             body: clarifaiResponse,
             owner: ctx.owner,
             repo: ctx.repo.replace(ctx.owner + '/', ''),
-            pr: parseInt(ctx.pull_number, 10),
+            pr: ctx.pull_number,
             headers: {
                 authorization: `token ${process.env.GITHUB_TOKEN}`,
             },
