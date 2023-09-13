@@ -25,6 +25,10 @@ runs:
     - uses: actions/setup-node@v3
       with:
         node-version: 18
+    - name: build
+      run: 'npm install'
+    - name: build
+      run: 'npm run build'
     - name: diff
       shell: bash
       run: 'git --no-pager diff HEAD^ HEAD --output=diff-file'
