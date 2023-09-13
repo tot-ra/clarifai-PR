@@ -11041,11 +11041,11 @@ async function reviewPR() {
 //
 //         console.log("Received this PR data:", data);
 
-        // const PAT = process.env.CLARIFAI_PAT;
-        // const USER_ID = process.env.CLARIFAI_USER_ID;
-        // const APP_ID = process.env.CLARIFAI_APP_ID;
-        // const MODEL_ID = process.env.CLARIFAI_MODEL_ID;
-        //
+        const PAT = process.env.CLARIFAI_PAT;
+        const USER_ID = process.env.CLARIFAI_USER_ID;
+        const APP_ID = process.env.CLARIFAI_APP_ID;
+        const MODEL_ID = process.env.CLARIFAI_MODEL_ID;
+
         // const pr_title = data.repository.pullRequest.title
         // const pr_descr = data.repository.pullRequest.body
         // RAW_TEXT += `Last pull request was titled "${pr_title} and had a description "${pr_descr}".\n`;
