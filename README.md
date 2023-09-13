@@ -11,7 +11,9 @@ on: [pull_request]
 jobs:
   clarifai-pr:
     runs-on: ubuntu-latest
-    name: AI PR review
+    name: Clarifai review
+    permissions:
+      pull-requests: write
     steps:
       - name: Review pull request code with clarifai.com
         uses: tot-ra/clarifai-PR@main
