@@ -10973,9 +10973,6 @@ var external_fs_default = /*#__PURE__*/__nccwpck_require__.n(external_fs_);
 
 async function reviewPR() {
     try {
-        console.log("process.env.GITHUB_TOKEN length", process.env.GITHUB_TOKEN.length)
-        // const octokit = github.getOctokit(process.env.GITHUB_TOKEN)
-
         let RAW_TEXT = `Act as an expert software engineer reviewing code. 
         You need to find errors and suggest a fix.
         Format your output to include file_name, line_number and comment.`
@@ -11058,7 +11055,7 @@ async function reviewPR() {
 
         for (let msg of data.repository.pullRequest.commits.edges[0].node.commit.tree.entries) {
             if (msg.object?.text) {
-                RAW_TEXT += `\nFile "${msg.path}" contents: \n\n ${msg.object.text.substring(0, 1000)}`
+                RAW_TEXT += `\nFile "${msg.path}" contents: \n\n ${msg.object.text.substring(0, 10000)}`
             }
         }
 
