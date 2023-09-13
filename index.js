@@ -27,51 +27,51 @@ async function reviewPR() {
         }
 
 
-//         let data = await graphql({
-//             query: `query ($owner: String!, $repo: String!, $pr: Int!) {
-//   repository(owner: $owner, name: $repo) {
-//     pullRequest(number: $pr) {
-//       id
-//       headRefName
-//       headRefOid
-//       mergeable
-//       reviewDecision
-//       state
-//       title
-//       body
-//       baseRefOid
-//       commits(last: 1) {
-//         edges {
-//           node {
-//             commit {
-//               message
-//               tree {
-//                 entries {
-//                   path
-//                   object {
-//                     ... on Blob {
-//                       id
-//                       text
-//                     }
-//                   }
-//                 }
-//               }
-//             }
-//           }
-//         }
-//       }
-//     }
-//   }
-// }`,
-//             owner: ctx.owner,
-//             repo: ctx.repo.replace(ctx.owner + '/', ''),
-//             pr: parseInt(ctx.pull_number, 10),
-//             headers: {
-//                 authorization: `token ${process.env.GITHUB_TOKEN}`,
-//             },
-//         });
-//
-//         console.log("Received this PR data:", data);
+        let data = await graphql({
+            query: `query ($owner: String!, $repo: String!, $pr: Int!) {
+  repository(owner: $owner, name: $repo) {
+    pullRequest(number: $pr) {
+      id
+      headRefName
+      headRefOid
+      mergeable
+      reviewDecision
+      state
+      title
+      body
+      baseRefOid
+      commits(last: 1) {
+        edges {
+          node {
+            commit {
+              message
+              tree {
+                entries {
+                  path
+                  object {
+                    ... on Blob {
+                      id
+                      text
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}`,
+            owner: ctx.owner,
+            repo: ctx.repo.replace(ctx.owner + '/', ''),
+            pr: parseInt(ctx.pull_number, 10),
+            headers: {
+                authorization: `token ${process.env.GITHUB_TOKEN}`,
+            },
+        });
+
+        console.log("Received this PR data:", data);
 
         const PAT = process.env.CLARIFAI_PAT;
         const USER_ID = process.env.CLARIFAI_USER_ID;
