@@ -24,6 +24,7 @@ async function reviewPR() {
             query: `query ($owner: String!, $repo: String!, $pr: Int!) {
   repository(owner: $owner, name: $repo) {
     pullRequest(number: $pr) {
+      id
       headRefName
       headRefOid
       mergeable
@@ -136,7 +137,7 @@ async function reviewPR() {
             body: clarifaiResponse,
             owner: ctx.owner,
             repo: ctx.repo.replace(ctx.owner + '/', ''),
-            pr: ctx.pull_number,
+            pr: data.repository.pullRequest.id,
             headers: {
                 authorization: `token ${process.env.GITHUB_TOKEN}`,
             },
