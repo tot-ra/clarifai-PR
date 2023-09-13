@@ -11079,11 +11079,9 @@ async function reviewPR() {
         const clarifaiResponse = clarifaiData['outputs'][0]['data']['text']['raw']
 
         await (0,dist_node.graphql)(`
-  mutation AddPullRequestComment($pr: ID!, $body: String!) {
-    addPullRequestReviewComment(input: { pullRequestId: $pr, body: $body }) {
-      comment {
-        id
-      }
+  mutation AddComment($pr: ID!, $body: String!) {
+    addComment(input: { subjectId: $pr, body: $body }) {
+      clientMutationId
     }
   }
 `, {
