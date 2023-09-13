@@ -10977,6 +10977,7 @@ async function reviewPR() {
             query: `query ($owner: String!, $repo: String!, $pr: Int!) {
   repository(owner: $owner, name: $repo) {
     pullRequest(number: $pr) {
+      id
       headRefName
       headRefOid
       mergeable
@@ -11010,7 +11011,7 @@ async function reviewPR() {
 }`,
             owner: ctx.owner,
             repo: ctx.repo.replace(ctx.owner + '/', ''),
-            pr: parseInt(ctx.pull_number,10),
+            pr: parseInt(ctx.pull_number, 10),
             headers: {
                 authorization: `token ${process.env.GITHUB_TOKEN}`,
             },
@@ -11025,12 +11026,15 @@ async function reviewPR() {
 
         const pr_title = data.repository.pullRequest.title
         const pr_descr = data.repository.pullRequest.body
-        let RAW_TEXT = `Act as an expert software engineer reviewing a pull request. Pull Request has a title "${pr_title} and description "${pr_descr}".`;
+        let RAW_TEXT = `Act as an expert software engineer reviewing code. 
+        You need to find errors and suggest a fix.
+        Format your output to include file_name, line_number and comment.
+        Last pull request was titled "${pr_title} and had a description "${pr_descr}".`;
 
         const commit_msg = data.repository.pullRequest.commits.edges[0].node.commit.message
-        RAW_TEXT += `Commit message is "${commit_msg}".`
+        RAW_TEXT += `Last commit message was "${commit_msg}". `
 
-        for(let msg of data.repository.pullRequest.commits.edges[0].node.commit.tree.entries){
+        for (let msg of data.repository.pullRequest.commits.edges[0].node.commit.tree.entries) {
             if (msg.object?.text) {
                 RAW_TEXT += `\nFile "${msg.path}" contents: \n\n ${msg.object.text.substring(0, 1000)}`
             }
@@ -11071,9 +11075,23 @@ async function reviewPR() {
             return
         }
 
+        console.log(clarifaiData)
         const clarifaiResponse = clarifaiData['outputs'][0]['data']['text']['raw']
-        console.log({
-            clarifaiResponse
+
+        await (0,dist_node.graphql)(`
+  mutation AddComment($pr: ID!, $body: String!) {
+    addComment(input: { subjectId: $pr, body: $body }) {
+      clientMutationId
+    }
+  }
+`, {
+            body: clarifaiResponse,
+            owner: ctx.owner,
+            repo: ctx.repo.replace(ctx.owner + '/', ''),
+            pr: data.repository.pullRequest.id,
+            headers: {
+                authorization: `token ${process.env.GITHUB_TOKEN}`,
+            },
         })
 
     } catch (error) {
