@@ -32,6 +32,7 @@ runs:
       shell: bash
       run: 'git --no-pager diff HEAD^ HEAD --output=diff-file'
     - name: check
+      workspace: ${{ github.action_path }}
       shell: bash
       run: 'node dist/index.js'
       env:
