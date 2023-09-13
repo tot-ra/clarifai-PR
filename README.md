@@ -9,9 +9,9 @@ Easily installable in your github repo as an external workflow action
 on: [pull_request]
 
 jobs:
-  hello_world_job:
+  clarifai-pr:
     runs-on: ubuntu-latest
-    name: clarifai-pr
+    name: AI PR review
     steps:
       - name: Review pull request code with clarifai.com
         uses: tot-ra/clarifai-PR@main
