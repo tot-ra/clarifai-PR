@@ -1,6 +1,6 @@
 # clarifai-PR
 
-Adds automated AI pull request review using llama-2 model via clarifai.com platform. 
+Adds automated AI pull request review using LLM models available via clarifai.com platform (such as llama-2, gpt-4 etc)
 Easily installable in your github repo as an external workflow action
 
 ## Example usage
