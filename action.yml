@@ -28,6 +28,7 @@ runs:
     - name: check
       shell: bash
       run: 'node dist/index.js'
+      uses: ./
       env:
         ACTION_REF: ${{ github.action_ref || env.BRANCH }}
         GIT_COMMIT_HASH: ${{ github.event.pull_request.head.sha }}
