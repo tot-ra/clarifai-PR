@@ -9,9 +9,9 @@ Easily installable in your github repo as an external workflow action
 on: [pull_request]
 
 jobs:
-  hello_world_job:
+  clarifai-pr:
     runs-on: ubuntu-latest
-    name: clarifai-pr
+    name: AI PR review
     steps:
       - name: Review pull request code with clarifai.com
         uses: tot-ra/clarifai-PR@main
@@ -20,5 +20,5 @@ jobs:
           CLARIFAI_PAT: ${{ secrets.CLARIFAI_PAT }}
           CLARIFAI_USER_ID: ${{ secrets.CLARIFAI_USER_ID }}
           CLARIFAI_APP_ID: ${{ secrets.CLARIFAI_APP_ID }}
-          CLARIFAI_MODEL_ID: 'llama2-70b-chat'
+          CLARIFAI_MODEL_ID: 'GPT-4'
 ```

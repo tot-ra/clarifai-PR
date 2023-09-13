@@ -10980,7 +10980,7 @@ async function reviewPR() {
         const gitDiff = external_fs_default().readFileSync('diff-file', { encoding: 'utf8', flag: 'r' });
         console.log('git diff:', gitDiff);
 
-        RAW_TEXT += `Here is a git diff for changes: ${gitDiff}`
+        RAW_TEXT += `Here is a git diff for changes: ${gitDiff}\n\n`
 
         const ctx = {
             owner: process.env.PR_OWNER,
@@ -11048,10 +11048,10 @@ async function reviewPR() {
 
         const pr_title = data.repository.pullRequest.title
         const pr_descr = data.repository.pullRequest.body
-        RAW_TEXT += `Last pull request was titled "${pr_title} and had a description "${pr_descr}".`;
+        RAW_TEXT += `Last pull request was titled "${pr_title} and had a description "${pr_descr}".\n`;
 
         const commit_msg = data.repository.pullRequest.commits.edges[0].node.commit.message
-        RAW_TEXT += `Last commit message was "${commit_msg}". `
+        RAW_TEXT += `Last commit message was "${commit_msg}".\n`
 
         for (let msg of data.repository.pullRequest.commits.edges[0].node.commit.tree.entries) {
             if (msg.object?.text) {
