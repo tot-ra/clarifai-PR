@@ -27,8 +27,10 @@ runs:
         node-version: 18
     - name: build
       run: 'npm install'
+      shell: bash
     - name: build
       run: 'npm run build'
+      shell: bash
     - name: diff
       shell: bash
       run: 'git --no-pager diff HEAD^ HEAD --output=diff-file'
