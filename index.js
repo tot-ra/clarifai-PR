@@ -27,69 +27,69 @@ async function reviewPR() {
         }
 
 
-        let data = await graphql({
-            query: `query ($owner: String!, $repo: String!, $pr: Int!) {
-  repository(owner: $owner, name: $repo) {
-    pullRequest(number: $pr) {
-      id
-      headRefName
-      headRefOid
-      mergeable
-      reviewDecision
-      state
-      title
-      body
-      baseRefOid
-      commits(last: 1) {
-        edges {
-          node {
-            commit {
-              message
-              tree {
-                entries {
-                  path
-                  object {
-                    ... on Blob {
-                      id
-                      text
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-}`,
-            owner: ctx.owner,
-            repo: ctx.repo.replace(ctx.owner + '/', ''),
-            pr: parseInt(ctx.pull_number, 10),
-            headers: {
-                authorization: `token ${process.env.GITHUB_TOKEN}`,
-            },
-        });
+//         let data = await graphql({
+//             query: `query ($owner: String!, $repo: String!, $pr: Int!) {
+//   repository(owner: $owner, name: $repo) {
+//     pullRequest(number: $pr) {
+//       id
+//       headRefName
+//       headRefOid
+//       mergeable
+//       reviewDecision
+//       state
+//       title
+//       body
+//       baseRefOid
+//       commits(last: 1) {
+//         edges {
+//           node {
+//             commit {
+//               message
+//               tree {
+//                 entries {
+//                   path
+//                   object {
+//                     ... on Blob {
+//                       id
+//                       text
+//                     }
+//                   }
+//                 }
+//               }
+//             }
+//           }
+//         }
+//       }
+//     }
+//   }
+// }`,
+//             owner: ctx.owner,
+//             repo: ctx.repo.replace(ctx.owner + '/', ''),
+//             pr: parseInt(ctx.pull_number, 10),
+//             headers: {
+//                 authorization: `token ${process.env.GITHUB_TOKEN}`,
+//             },
+//         });
+//
+//         console.log("Received this PR data:", data);
 
-        console.log("Received this PR data:", data);
-
-        const PAT = process.env.CLARIFAI_PAT;
-        const USER_ID = process.env.CLARIFAI_USER_ID;
-        const APP_ID = process.env.CLARIFAI_APP_ID;
-        const MODEL_ID = process.env.CLARIFAI_MODEL_ID;
-
-        const pr_title = data.repository.pullRequest.title
-        const pr_descr = data.repository.pullRequest.body
-        RAW_TEXT += `Last pull request was titled "${pr_title} and had a description "${pr_descr}".\n`;
-
-        const commit_msg = data.repository.pullRequest.commits.edges[0].node.commit.message
-        RAW_TEXT += `Last commit message was "${commit_msg}".\n`
-
-        for (let msg of data.repository.pullRequest.commits.edges[0].node.commit.tree.entries) {
-            if (msg.object?.text) {
-                RAW_TEXT += `\nFile "${msg.path}" contents: \n\n ${msg.object.text.substring(0, 10000)}`
-            }
-        }
+        // const PAT = process.env.CLARIFAI_PAT;
+        // const USER_ID = process.env.CLARIFAI_USER_ID;
+        // const APP_ID = process.env.CLARIFAI_APP_ID;
+        // const MODEL_ID = process.env.CLARIFAI_MODEL_ID;
+        //
+        // const pr_title = data.repository.pullRequest.title
+        // const pr_descr = data.repository.pullRequest.body
+        // RAW_TEXT += `Last pull request was titled "${pr_title} and had a description "${pr_descr}".\n`;
+        //
+        // const commit_msg = data.repository.pullRequest.commits.edges[0].node.commit.message
+        // RAW_TEXT += `Last commit message was "${commit_msg}".\n`
+        //
+        // for (let msg of data.repository.pullRequest.commits.edges[0].node.commit.tree.entries) {
+        //     if (msg.object?.text) {
+        //         RAW_TEXT += `\nFile "${msg.path}" contents: \n\n ${msg.object.text.substring(0, 10000)}`
+        //     }
+        // }
 
         console.log("Sending:" + RAW_TEXT)
 
