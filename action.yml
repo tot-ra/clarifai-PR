@@ -18,10 +18,16 @@ inputs:
 runs:
   using: 'composite'
   steps:
+    - name: ls
+      shell: bash
+      run: "ls -hal"
     - uses: actions/checkout@v3
       with:
         ref: ${{ github.event.pull_request.head.sha }}
         fetch-depth: 2
+    - name: ls
+      shell: bash
+      run: "ls -hal"
     - name: diff
       shell: bash
       run: 'git --no-pager diff HEAD^ HEAD --output=diff-file'
