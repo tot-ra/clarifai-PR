@@ -22,18 +22,6 @@ runs:
       with:
         ref: ${{ github.event.pull_request.head.sha }}
         fetch-depth: 2
-    - uses: actions/setup-node@v3
-      with:
-        node-version: 18
-    - name: build
-      run: 'npm install'
-      shell: bash
-    - name: install ncc
-      run: 'npm i -g @vercel/ncc'
-      shell: bash
-    - name: build
-      run: 'npm run build'
-      shell: bash
     - name: diff
       shell: bash
       run: 'git --no-pager diff HEAD^ HEAD --output=diff-file'
