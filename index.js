@@ -6,7 +6,9 @@ import fs from 'fs'
 async function reviewPR() {
     try {
         let RAW_TEXT = `Act as an expert software engineer reviewing code. 
-        You need to find errors and suggest a fix.
+        You need to find errors and suggest a fix. Prefix errors with 🔴. 
+        Prefix performance issues with 🟠.
+        If there are no clear errors, suggest improvements. Prefix improvements with 🔵.
         Format your output to include file_name, line_number and comment.`
 
         const gitDiff = fs.readFileSync('diff-file', { encoding: 'utf8', flag: 'r' });
