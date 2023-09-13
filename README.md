@@ -25,7 +25,7 @@ jobs:
           CLARIFAI_MODEL_ID: 'GPT-4'
 ```
 
-You need to set `CLARIFAI_` - prefixed secrets from https://clarifai.com
+You need to set `CLARIFAI_` - prefixed secrets from https://clarifai.com in your repository or org settings ( https://github.com/org/repo/settings/secrets/actions )
 
 
 ## Example of comment you may receive:
