@@ -10980,12 +10980,8 @@ async function reviewPR() {
         You need to find errors and suggest a fix.
         Format your output to include file_name, line_number and comment.`
 
-        try {
-            const gitDiff = external_fs_default().readFileSync('diff-file', { encoding: 'utf8', flag: 'r' });
-            console.log('git diff:', gitDiff);
-        } catch (err) {
-            console.error('Error reading file:', err);
-        }
+        const gitDiff = external_fs_default().readFileSync('diff-file', { encoding: 'utf8', flag: 'r' });
+        console.log('git diff:', gitDiff);
 
         RAW_TEXT += `Here is a git diff for changes: ${gitDiff}`
 
