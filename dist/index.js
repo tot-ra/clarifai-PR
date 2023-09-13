@@ -11025,10 +11025,13 @@ async function reviewPR() {
 
         const pr_title = data.repository.pullRequest.title
         const pr_descr = data.repository.pullRequest.body
-        let RAW_TEXT = `Act as an expert software engineer reviewing a pull request. Pull Request has a title "${pr_title} and description "${pr_descr}".`;
+        let RAW_TEXT = `Act as an expert software engineer reviewing code. 
+        You need to find errors and suggest a fix.
+        Format your output in JSON format, use keys file_name, line_number and comment.
+        Last pull request was titled "${pr_title} and had a description "${pr_descr}".`;
 
         const commit_msg = data.repository.pullRequest.commits.edges[0].node.commit.message
-        RAW_TEXT += `Commit message is "${commit_msg}". Format your output in JSON format, use keys file_name, line_number and comment.`
+        RAW_TEXT += `Last commit message was "${commit_msg}". `
 
         for(let msg of data.repository.pullRequest.commits.edges[0].node.commit.tree.entries){
             if (msg.object?.text) {
