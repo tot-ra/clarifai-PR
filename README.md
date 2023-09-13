@@ -25,6 +25,8 @@ jobs:
           CLARIFAI_MODEL_ID: 'GPT-4'
 ```
 
+You need to set `CLARIFAI_` - prefixed secrets from https://clarifai.com
+
 
 ## Example of comment you may receive:
 
@@ -35,3 +37,6 @@ jobs:
 | 🔵 | src/workers/darknet.ts | Various | It is recommended to use try-catch with async-await in order to improve error handling. |
 | 🔵 | src/workers/darknet.ts | Various | It can be improved to use JSDoc comments for better code readability and tooling. This would include to functions with comments briefly explaining what they're doing and their parameters. |
 | 🟠 | src/workers/darknet.ts | 152 | Each time we read a file using `fs.readFileSync()`, this operation blocks the entire thread until it finishes. This could be mitigated by considering using `fs.promises.readFile()`, which is asynchronous and returns a promise. |
+
+## Privacy
+Note that this github action code accesses your code once you install it on specific events and passes your code to clarifai.com and LLM models for analysis
