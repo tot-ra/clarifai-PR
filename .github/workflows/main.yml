@@ -1,9 +1,9 @@
 on: [pull_request]
 
 jobs:
-  hello_world_job:
+  clarifai-pr:
     runs-on: ubuntu-latest
-    name: clarifai-pr
+    name: Clarifai review
     permissions:
       pull-requests: write
     steps:
