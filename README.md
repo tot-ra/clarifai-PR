@@ -1,3 +1,5 @@
+![image](https://github.com/user-attachments/assets/9697b203-07b2-4f74-9cb4-0bea5c886f09)
+
 # clarifai-PR
 
 Adds automated AI pull request review using LLM models available via clarifai.com platform (such as llama-2, gpt-4 etc)
